@@ -1,30 +1,7 @@
 import express from "express";
+import { travels } from "../db/mock.mjs";
 
 const router = express.Router();
-
-// Sample data (for demonstration purposes)
-let travels = [
-  {
-    // http://localhost:3000/api/travels/1
-    id: 1,
-    country: "France",
-    city: "Paris",
-    title: "Exploring the City of Lights",
-    reason: "Travel",
-    description:
-      "A wonderful trip to explore the cultural and historical wonders of Paris.",
-  },
-
-  // http://localhost:3000/api/travels/2
-  {
-    id: 2,
-    country: "Italy",
-    city: "Rome",
-    title: "Roman Holiday",
-    reason: "Travel",
-    description: "An exciting adventure through the ancient streets of Rome.",
-  },
-];
 
 router.get("/travels", (req, res) => {
   console.log("GET /travels endpoint hit");

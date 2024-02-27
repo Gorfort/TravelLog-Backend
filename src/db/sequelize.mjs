@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes } from "sequelize";
-import { TravelModel } from "travel.mjs";
+import { TravelModel } from "../Model/trips.mjs";
 import { travels } from "./mock.mjs";
 
 const sequelize = new Sequelize(

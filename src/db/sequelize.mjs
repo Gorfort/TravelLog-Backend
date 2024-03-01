@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes } from "sequelize";
-import { TravelModel } from "../Model/trips.mjs";
+import { TravelModel } from "../Model/Travel.mjs";
 import { travels } from "./mock.mjs";
 
 const sequelize = new Sequelize(
@@ -28,7 +28,6 @@ let initDb = async () => {
   }
 };
 
-// Import travel data from mock file
 const importTravels = async () => {
   try {
     for (const travel of travels) {
@@ -41,6 +40,8 @@ const importTravels = async () => {
       });
       console.log(createdTravel.toJSON());
     }
+
+    console.log("Travels imported successfully");
   } catch (error) {
     console.error("Error importing travels:", error);
   }

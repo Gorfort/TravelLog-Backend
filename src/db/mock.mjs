@@ -1,6 +1,7 @@
 // mock.mjs
 export let travels = [
   {
+    // http://localhost:3000/api/travels/1
     id: 1,
     country: "France",
     city: "Paris",

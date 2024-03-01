@@ -1,4 +1,6 @@
 import express from "express";
+
+import { TravelModel } from "../Model/Travel.mjs";
 import { travels, deleteTravel } from "../db/mock.mjs";
 
 const router = express.Router();
@@ -11,7 +13,12 @@ router.get("/travels", (req, res) => {
 // Get a specific travel entry by ID
 router.get("/travels/:id", (req, res) => {
   const { id } = req.params;
-  const travel = travels.find((entry) => entry.id === parseInt(id));
+
+  // Appel aux données définies dans le tableau de MOCK
+  //const travel = travels.find((entry) => entry.id === parseInt(id));
+
+  const travel = TravelModel.findByPk(req.params.id);
+  console.log(travel);
 
   if (!travel) {
     res.status(404).json({ error: "Travel entry not found" });

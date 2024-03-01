@@ -1,5 +1,5 @@
 import express from "express";
-import { travels } from "../db/mock.mjs";
+import { travels, deleteTravel } from "../db/mock.mjs";
 
 const router = express.Router();
 
@@ -44,9 +44,21 @@ router.put("/travels/:id", (req, res) => {
 
 // Delete a travel entry by ID
 router.delete("/travels/:id", (req, res) => {
-  const { id } = req.params;
-  travels = travels.filter((entry) => entry.id !== parseInt(id));
-  res.json({ message: "Travel entry deleted successfully" });
+  try {
+    const { id } = req.params;
+
+    const travelsIds = travels.map((t) => t.id);
+    if (!travelsIds.includes(parseInt(id))) {
+      return res.status(400).json({ message: "Id not found." });
+    }
+
+    deleteTravel(id);
+    res.json({ message: "Travel entry deleted successfully" });
+  } catch (error) {
+    const message =
+      "Le produit n'a pas pu être supprimé. Merci de réessayer dans quelques instants.";
+    res.status(500).json({ message, data: error });
+  }
 });
 
 export default router;

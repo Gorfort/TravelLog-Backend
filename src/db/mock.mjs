@@ -98,3 +98,7 @@ export let travels = [
     description: "Exploring the ancient ruins and history of Athens, Greece.",
   },
 ];
+
+export const deleteTravel = (id) => {
+  travels = travels.filter((f) => f.id !== parseInt(id));
+};

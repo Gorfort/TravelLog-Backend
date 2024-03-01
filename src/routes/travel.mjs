@@ -1,6 +1,6 @@
 import express from "express";
 
-import { TravelModel } from "../Model/Travel.mjs";
+import { TravelModel } from "../Model/TravelModel.mjs";
 import { travels, deleteTravel } from "../db/mock.mjs";
 
 const router = express.Router();

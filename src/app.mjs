@@ -10,7 +10,11 @@ sequelize
   .then((_) =>
     console.log("La connexion à la base de données a bien été établie")
   )
-  .catch((error) => console.error("Impossible de se connecter à la DB"));
+  .catch((error) =>
+    console.error("Impossible de se connecter à la DB" + error.stack)
+  );
+
+app.use(express.json());
 
 // Define your first route
 app.get("/", (req, res) => {

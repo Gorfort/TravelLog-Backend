@@ -11,19 +11,25 @@ router.get("/travels", (req, res) => {
 });
 
 // Get a specific travel entry by ID
-router.get("/travels/:id", (req, res) => {
-  const { id } = req.params;
+router.get("/travels/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  // Appel aux données définies dans le tableau de MOCK
-  //const travel = travels.find((entry) => entry.id === parseInt(id));
+    // Appel aux données définies dans le tableau de MOCK
+    // const travel = travels.find((entry) => entry.id === parseInt(id));
 
-  const travel = TravelModel.findByPk(req.params.id);
-  console.log(travel);
+    const travel = await TravelModel.findByPk(id);
 
-  if (!travel) {
-    res.status(404).json({ error: "Travel entry not found" });
-  } else {
-    res.json(travel);
+    console.log(travel);
+
+    if (!travel) {
+      res.status(404).json({ error: "Travel entry not found" });
+    } else {
+      res.json(travel);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

@@ -1,6 +1,6 @@
 import express from "express";
 
-import { TravelModel } from "../Model/TravelModel.mjs";
+import { Travel } from "../db/sequelize.mjs";
 import { travels, deleteTravel } from "../db/mock.mjs";
 
 const router = express.Router();
@@ -14,11 +14,7 @@ router.get("/travels", (req, res) => {
 router.get("/travels/:id", async (req, res) => {
   try {
     const { id } = req.params;
-
-    // Appel aux données définies dans le tableau de MOCK
-    // const travel = travels.find((entry) => entry.id === parseInt(id));
-
-    const travel = await TravelModel.findByPk(id);
+    const travel = await Travel.findByPk(id);
 
     console.log(travel);
 
@@ -59,17 +55,21 @@ router.put("/travels/:id", (req, res) => {
 router.delete("/travels/:id", (req, res) => {
   try {
     const { id } = req.params;
-
     const travelsIds = travels.map((t) => t.id);
+
     if (!travelsIds.includes(parseInt(id))) {
       return res.status(400).json({ message: "Id not found." });
     }
 
+    // Assuming you have a function named deleteTravel to delete the entry
     deleteTravel(id);
-    res.json({ message: "Travel entry deleted successfully" });
+
+    // Return a success message after deletion
+    const message = `Travel entry with ID ${id} deleted successfully`;
+    res.json({ message });
   } catch (error) {
     const message =
-      "Le produit n'a pas pu être supprimé. Merci de réessayer dans quelques instants.";
+      "The travel entry could not be deleted. Please try again later.";
     res.status(500).json({ message, data: error });
   }
 });

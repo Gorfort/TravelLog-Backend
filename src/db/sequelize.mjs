@@ -1,8 +1,8 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize, DataTypes, where } from "sequelize";
 import { TravelModel } from "../Model/TravelModel.mjs";
 import { travels } from "./mock.mjs";
 
-const sequelize = new Sequelize(
+export const sequelize = new Sequelize(
   "db_travels", // Database name
   "root", // Database user
   "root", // Database password
@@ -17,34 +17,40 @@ const sequelize = new Sequelize(
 // Define the travel model
 const Travel = TravelModel(sequelize, DataTypes);
 
-// Initialize the database
-let initDb = async () => {
-  try {
-    await sequelize.sync({ force: true });
-    await importTravels();
-    console.log("The database db_travels has been synchronized successfully");
-  } catch (error) {
-    console.error("Error synchronizing the database:", error);
-  }
+export const readDB = async (travelID) => {
+  return await Travel.findAll({
+    where: {
+      id: travelID,
+    },
+  });
 };
 
-const importTravels = async () => {
-  try {
-    for (const travel of travels) {
-      const createdTravel = await Travel.create({
-        country: travel.country,
-        city: travel.city,
-        title: travel.title,
-        reason: travel.reason,
-        description: travel.description,
-      });
-      console.log(createdTravel.toJSON());
+export const createDB = async (country, city, title, reason, description) => {
+  return await Travel.create({ country, city, title, reason, description });
+};
+
+export const updateDB = async (
+  id,
+  country,
+  city,
+  title,
+  reason,
+  description
+) => {
+  await Travel.update(
+    { country, city, title, reason, description },
+    {
+      where: {
+        id,
+      },
     }
-
-    console.log("Travels imported successfully");
-  } catch (error) {
-    console.error("Error importing travels:", error);
-  }
+  );
 };
 
-export { sequelize, initDb, Travel };
+export const deleteDB = async (id) => {
+  await Travel.destroy({
+    where: {
+      id,
+    },
+  });
+};

@@ -29,6 +29,7 @@ export const createDB = async (country, city, title, reason, description) => {
   return await Travel.create({ country, city, title, reason, description });
 };
 
+// Assume updateDB returns a Promise that resolves to a boolean indicating success
 export const updateDB = async (
   id,
   country,
@@ -37,7 +38,7 @@ export const updateDB = async (
   reason,
   description
 ) => {
-  await Travel.update(
+  const [updatedRows] = await Travel.update(
     { country, city, title, reason, description },
     {
       where: {
@@ -45,12 +46,19 @@ export const updateDB = async (
       },
     }
   );
+
+  // If updatedRows is greater than 0, it means at least one row was updated (success)
+  return updatedRows > 0;
 };
 
+// Modify the deleteDB function to return a boolean
 export const deleteDB = async (id) => {
-  await Travel.destroy({
+  const result = await Travel.destroy({
     where: {
       id,
     },
   });
+
+  // If result is greater than 0, it means at least one row was deleted (success)
+  return result > 0;
 };

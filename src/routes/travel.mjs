@@ -51,9 +51,8 @@ router.post("/travels", async (req, res) => {
 router.put("/travels/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    // const updatedTravel = req.body;
 
-    await updateDB(
+    const updateResult = await updateDB(
       id,
       req.body.country,
       req.body.city,
@@ -62,7 +61,12 @@ router.put("/travels/:id", async (req, res) => {
       req.body.description
     );
 
-    res.status(200).json({ message: "ok" });
+    if (!updateResult) {
+      // If updateDB returns false, it means no entry was updated (ID not found)
+      res.status(404).json({ error: "Travel entry not found" });
+    } else {
+      res.status(200).json({ message: "Travel Entry Successfully Edited" });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -73,10 +77,14 @@ router.put("/travels/:id", async (req, res) => {
 router.delete("/travels/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    // const travelsIds = travels.map((t) => t.id);
-    await deleteDB(id);
+    const deletionResult = await deleteDB(id);
 
-    res.status(200).json({ message: "ok" });
+    if (!deletionResult) {
+      // If deleteDB returns false, it means no entry was deleted (ID not found)
+      res.status(404).json({ error: "Travel entry not found" });
+    } else {
+      res.status(200).json({ message: "Travel Entry Successfully deleted" });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

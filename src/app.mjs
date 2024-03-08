@@ -4,7 +4,7 @@ import travelRouter from "./routes/travel.mjs";
 const app = express();
 const port = 3000;
 
-import { initDb, sequelize } from "./db/sequelize.mjs";
+import { sequelize } from "./db/sequelize.mjs";
 sequelize
   .authenticate()
   .then((_) =>
@@ -14,7 +14,7 @@ sequelize
     console.error("Impossible de se connecter à la DB" + error.stack)
   );
 
-initDb();
+//initDb();
 
 app.use(express.json());
 

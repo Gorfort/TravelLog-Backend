@@ -1,7 +1,5 @@
 import express from "express";
-
-import { Travel } from "../db/sequelize.mjs";
-import { travels, deleteTravel } from "../db/mock.mjs";
+import { createDB, readDB, updateDB, deleteDB } from "../db/sequelize.mjs";
 
 const router = express.Router();
 
@@ -14,7 +12,8 @@ router.get("/travels", (req, res) => {
 router.get("/travels/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const travel = await Travel.findByPk(id);
+    // const travel = await Travel.findByPk(id);
+    const travel = await readDB(id);
 
     console.log(travel);
 
@@ -30,47 +29,57 @@ router.get("/travels/:id", async (req, res) => {
 });
 
 // Create a new travel entry
-router.post("/travels", (req, res) => {
-  const newTravel = req.body;
-  newTravel.id = travels.length + 1;
-  travels.push(newTravel);
-  res.status(201).json(newTravel);
+router.post("/travels", async (req, res) => {
+  try {
+    const newTravel = req.body;
+    const createDBresult = await createDB(
+      req.body.country,
+      req.body.city,
+      req.body.title,
+      req.body.reason,
+      req.body.description
+    );
+
+    res.json(createDBresult);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 // Update a travel entry by ID
-router.put("/travels/:id", (req, res) => {
-  const { id } = req.params;
-  const updatedTravel = req.body;
-  const index = travels.findIndex((entry) => entry.id === parseInt(id));
+router.put("/travels/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    // const updatedTravel = req.body;
 
-  if (index === -1) {
-    res.status(404).json({ error: "Travel entry not found" });
-  } else {
-    travels[index] = { ...travels[index], ...updatedTravel };
-    res.json(travels[index]);
+    await updateDB(
+      id,
+      req.body.country,
+      req.body.city,
+      req.body.title,
+      req.body.reason,
+      req.body.description
+    );
+
+    res.status(200).json({ message: "ok" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 // Delete a travel entry by ID
-router.delete("/travels/:id", (req, res) => {
+router.delete("/travels/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const travelsIds = travels.map((t) => t.id);
+    // const travelsIds = travels.map((t) => t.id);
+    await deleteDB(id);
 
-    if (!travelsIds.includes(parseInt(id))) {
-      return res.status(400).json({ message: "Id not found." });
-    }
-
-    // Assuming you have a function named deleteTravel to delete the entry
-    deleteTravel(id);
-
-    // Return a success message after deletion
-    const message = `Travel entry with ID ${id} deleted successfully`;
-    res.json({ message });
+    res.status(200).json({ message: "ok" });
   } catch (error) {
-    const message =
-      "The travel entry could not be deleted. Please try again later.";
-    res.status(500).json({ message, data: error });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

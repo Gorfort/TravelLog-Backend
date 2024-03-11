@@ -14,7 +14,7 @@ export const sequelize = new Sequelize(
   }
 );
 
-// Define the travel model
+// READ
 const Travel = TravelModel(sequelize, DataTypes);
 
 export const readDB = async (travelID) => {
@@ -29,7 +29,7 @@ export const createDB = async (country, city, title, reason, description) => {
   return await Travel.create({ country, city, title, reason, description });
 };
 
-// Assume updateDB returns a Promise that resolves to a boolean indicating success
+// UPDATE
 export const updateDB = async (
   id,
   country,
@@ -51,7 +51,7 @@ export const updateDB = async (
   return updatedRows > 0;
 };
 
-// Modify the deleteDB function to return a boolean
+// DELETE
 export const deleteDB = async (id) => {
   const result = await Travel.destroy({
     where: {
